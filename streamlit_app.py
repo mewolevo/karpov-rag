@@ -1,9 +1,8 @@
-
 import os
 import streamlit as st
 from llm.embedder import get_query_embedding, load_courses_data, load_faiss_index, search_courses
-
 import cohere
+
 cohere_client = cohere.ClientV2(os.getenv("COHERE_API_KEY"))
 
 def main():
@@ -34,9 +33,6 @@ def main():
         # Загрузка FAISS индекса и данных о курсах
         index = load_faiss_index("llm/course_embeddings.index")
         courses_data = load_courses_data("llm/courses_data.json")
-
-        # Генерация эмбеддинга для запроса
- #       query_embedding = get_query_embedding(query, model_type='cohere')
 
         # Поиск курсов
         recommendations = process_user_query(query, index, courses_data)
@@ -74,15 +70,15 @@ def process_user_query(user_query, index, courses_data, llm_available=True, llm_
     if llm_available and llm_client:
         try:
             # Формируем контекст для LLM
-            context = "Вот несколько подходящих курсов:\n" + "\n".join(
-                [f"- {course['title']}" for course in top_courses]
+            context = "Вот несколько подходящих курсов школы karpov.courses:\n" + "\n".join(
+                [f"- {course['title']}, описание - {course['description'][:100]}" for course in top_courses]
             )
 
             # Запрос к LLM
             llm_prompt = (
                 f"Пользователь задал вопрос: '{user_query}'.\n"
                 f"{context}\n"
-                "Порекомендуй ему курс и кратко объясни, почему он подходит."
+                "Порекомендуй ему курс и кратко объясни, почему он подходит. Будь уверен в ответах"
             )
 
             llm_response = llm_client.chat(model="command-r-plus-08-2024",
