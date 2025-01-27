@@ -71,14 +71,14 @@ def process_user_query(user_query, index, courses_data, llm_available=True, llm_
         try:
             # Формируем контекст для LLM
             context = "Вот несколько подходящих курсов школы karpov.courses:\n" + "\n".join(
-                [f"- {course['title']}, описание - {course['description'][:100]}" for course in top_courses]
+                [f"- {course['title']}, описание - {course['description'][:50]}" for course in top_courses]
             )
 
             # Запрос к LLM
             llm_prompt = (
                 f"Пользователь задал вопрос: '{user_query}'.\n"
                 f"{context}\n"
-                "Порекомендуй ему курс и кратко объясни, почему он подходит. Будь уверен в ответах"
+                "Порекомендуй ему курс и кратко объясни, почему он подходит. Будь уверен в ответах, не используй слова вроде наверное, кажется, возможно и тд"
             )
 
             llm_response = llm_client.chat(model="command-r-plus-08-2024",
